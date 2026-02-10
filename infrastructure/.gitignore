@@ -13,3 +13,6 @@ logs/**/*.log
 
 # Docker volumes（ローカル永続化データ）
 volumes/
+
+# Dify公式リポジトリ（sparse checkout）
+dify-official/

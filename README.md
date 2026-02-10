@@ -32,7 +32,7 @@ Logic Factory は、バイアス検知、事実整理、環境構築をデジタ
 .
 ├── infrastructure/          # 共通基盤（n8n, Dify, DB等）の設定
 ├── apps/                    # 個別プロジェクト（モジュール）
-│   └── mediabias-autotube/  # オールドメディア報道の自動バイアス解析
+│   └── mediabias-autotube/  # (例) オールドメディア報道の自動バイアス解析
 ├── shared/                  # プロジェクト間共通の Python ライブラリ / ユーティリティ
 ├── docs/                    # 共通ガイドライン・システム構成図
 └── Makefile                 # 環境構築・運用コマンド
@@ -53,18 +53,87 @@ Logic Factory は、バイアス検知、事実整理、環境構築をデジタ
 
 ## 🛠 クイックスタート (Setup)
 
-### 1. 基盤の起動
+### 1. 環境変数の設定
 
 ```bash
-cd infrastructure
-docker-compose up -d
+# プロジェクトルートから実行
+make infra-setup
 
+# infrastructure/.env を編集してパスワードとAPIキーを設定:
+#   - POSTGRES_PASSWORD
+#   - DIFY_SECRET_KEY
+#   - REDIS_PASSWORD
+#   - DIFY_API_KEY (OpenAI/Anthropic等)
 ```
 
-### 2. Dify / n8n へのアクセス
+### 2. 基盤の起動
+
+```bash
+# Makefile を使う場合（推奨）
+make infra-up
+
+# または直接 Docker Compose を使う場合
+cd infrastructure
+docker compose up -d
+```
+
+**初回起動時**: `n8n_db` データベースが自動的に作成されます。2回目以降は既存のデータをそのまま使用します。
+
+### 3. Dify / n8n へのアクセス
 
 - Dify: `http://localhost:80`
 - n8n: `http://localhost:5678`
+
+### 4. 状態確認
+
+```bash
+make infra-ps        # コンテナ状態確認
+make infra-health    # ヘルスチェック
+```
+
+---
+
+## 📋 Makefile コマンド (Commands)
+
+プロジェクトルートから使用可能なコマンド一覧：
+
+### 基本操作
+
+```bash
+make help              # コマンド一覧を表示
+make infra-setup       # .env ファイルを作成
+make infra-up          # 全サービス起動
+make infra-down        # 全サービス停止（データ保持）
+make infra-restart     # 全サービス再起動
+make infra-ps          # コンテナ状態確認
+```
+
+### ログ・監視
+
+```bash
+make infra-logs        # 全サービスのログ（リアルタイム）
+make infra-logs-n8n    # n8nのログのみ
+make infra-logs-dify   # Dify関連のログのみ
+make infra-health      # ヘルスチェック実行
+```
+
+### データベース接続
+
+```bash
+make infra-db          # PostgreSQL に接続
+make infra-db-init     # n8n用DBを手動初期化（通常不要）
+make infra-db-reset    # n8n用DBを完全リセット※警告
+make infra-redis       # Redis に接続
+```
+
+### クリーンアップ
+
+```bash
+make infra-clean       # コンテナ停止＋削除（データ保持）
+make infra-clean-all   # 全削除（データも削除）※警告
+```
+
+詳細は [`infrastructure/README.md`](./infrastructure/README.md) および `make help` を参照してください。
 
 ---
 

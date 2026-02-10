@@ -21,7 +21,7 @@ Logic Factory は、AI 駆動型マルチプロジェクト基盤であり、以
 ```bash
 # 共通基盤（n8n, Dify, PostgreSQL）の起動
 cd infrastructure
-docker-compose up -d
+docker compose up -d
 
 # サービスへのアクセス
 # - Dify: http://localhost:80
