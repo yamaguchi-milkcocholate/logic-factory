@@ -1,0 +1,15 @@
+# 環境変数（機密情報を含む）
+.env
+
+# データディレクトリ
+shared/data/*
+!shared/data/.gitkeep
+dify/storage/*
+!dify/storage/.gitkeep
+
+# ログファイル
+logs/*.log
+logs/**/*.log
+
+# Docker volumes（ローカル永続化データ）
+volumes/
